@@ -1,0 +1,7 @@
+Windows Registry Editor Version 5.00
+
+[HKEY_CLASSES_ROOT\*\shell\emacs]
+@="emacs"
+
+[HKEY_CLASSES_ROOT\*\shell\emacs\command]
+@="D:\\emacs\\bin\\runemacs.exe -Q --load  d:\\ludi\\.emacs  \"%1\""
