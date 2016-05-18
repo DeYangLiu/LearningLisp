@@ -1,0 +1,32 @@
+在读取期定义读取宏，使得用户可以重新调整（reprogram）Lisp的语法；
+在编译期运行代码，则是Lisp宏的工作基础；
+在运行期编译代码，使得Lisp可以在Emacs这样的程序中，充当扩展语言（extension language）；
+在运行期读取代码，使得程序之间可以用S-表达式（S-expression）通信，
+compile
+load
+
+
+代码使用符号和常量组成的树形表示法
+
+函数也是一种数据类型。
+
+在Lisp语言中，所有变量实际上都是指针，所指向的值有类型之分，而变量本身没有。复制变量就相当于复制指针，而不是复制它们指向的数据。
+
+符号实际上是一种指针，指向储存在哈希表中的字符串。
+
+垃圾回收机制。
+
+程序只由表达式（expression）组成。语句，块不需要。
+
+# 累加器
+(defun foo (n)
+  (lambda (i) (incf n i)))
+
+# exception
+handler-case, restart-bind
+
+# fasl (fast loading)
+sbcl --noinform --eval "(compile-file \"in.lisp\")" --eval "(quit)" 
+
+sbcl --noinform --load in.fasl --quit # --end-toplevel-options "$@"
+
