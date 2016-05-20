@@ -1,5 +1,39 @@
 
 #|
+# how to install and use third party's package
+## package 
+is defined by language standard,
+which specify how to create, modify,delete,find.
+
+you load lisp code which in turn create a package.
+import symbols. e.g. apt-get v.s. quicklisp 
+
+## system
+ is a bunch of code plus some instructions which
+tell depending order. e.g. make v.s ASDF
+
+## module
+require, provide is deprecated.
+
+load a single file: read the text, eval the expressions.
+require : load many files if not loaded
+
+C-c C-l M-x slime-load-file
+
+
+##first time setting
+(load "~/quicklisp/setup.lisp")
+(ql:add-to-init-file) ;=> ~/.sbclrc
+
+##quicklisp usage
+(ql:quickload "drakma")
+(ql:where-is-system "cl-ppcre")
+
+
+##ref
+https://www.quicklisp.org/beta/faq.html
+
+# roll your own package
 install packages from "practical common lisp"
 http://www.gigamonkeys.com/book/
 
@@ -22,6 +56,7 @@ http://www.gigamonkeys.com/book/
 
 (html (:p :id "x" :style "foo" "Foo"))
 ;=> <p id='x' style='foo'>Foo</p>
+
 
 |#
 

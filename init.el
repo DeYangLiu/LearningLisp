@@ -24,6 +24,11 @@
 (setq scroll-margin 3
       scroll-conservatively 10000)
 
+(cua-mode t)
+    (setq cua-auto-tabify-rectangles nil) ;; Don't tabify after rectangle commands
+    (transient-mark-mode 1)               ;; No region when it is not highlighted
+    (setq cua-keep-region-after-copy t) 
+
 ;;;; packages init
 (require 'package) ;M-x list-packages
 (add-to-list 'package-archives

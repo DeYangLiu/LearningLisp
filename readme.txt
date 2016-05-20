@@ -11,6 +11,7 @@ the following are tested both on windows xp and ubuntu14.04
 ";;;;" ";;;" ";;" ";" are comments in lisp.
 M-x means hold on Alt and press x 
 C-x 0 means hold on Ctrl and press x, release, press 0
+C-g interrupt input sequence.
 
 # install package manager
 current art is using quicklisp which obsoletes asdf-install.
@@ -34,6 +35,7 @@ emacs>
 
 emacs>
 M-x slime
+F11 M-x toggle-frame-fullscreen
 
 # shortcuts
 
@@ -83,6 +85,10 @@ M-: (getenv "HOME")
 M-: (expand-file-name "~")
 M-x linum-mode ; toggles the line number mode on and off
 M-x (require 'vlf-setup) ; M-x vlf  to open very large file
+
+Text encoding:
+see/change C-x RET f ;i prefer gbk-unix or utf-8-unix
+by character C-u C-x =
 
 
 M-x slime 打开repl buffer
@@ -134,6 +140,18 @@ C-c > list callees
 
 C-c C-t 打开或关闭当前光标处的trace.
 M-x slime-untrace-all
+
+
+# msys>
+start emacs from mingw32/msys
+check HOME PS1
+
+M-x shell:
+add this line to /etc/profile:
+ export ESHELL="E:/MinGW/msys/1.0/bin/bash.exe"
+
+then you can enjoy the glorry of msys.
+
 
 # resources
 http://norvig.com/
