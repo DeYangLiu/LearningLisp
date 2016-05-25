@@ -1,4 +1,4 @@
-在读取期定义读取宏，使得用户可以重新调整（reprogram）Lisp的语法；
+#|在读取期定义读取宏，使得用户可以重新调整（reprogram）Lisp的语法；
 在编译期运行代码，则是Lisp宏的工作基础；
 在运行期编译代码，使得Lisp可以在Emacs这样的程序中，充当扩展语言（extension language）；
 在运行期读取代码，使得程序之间可以用S-表达式（S-expression）通信，
@@ -30,3 +30,44 @@ sbcl --noinform --eval "(compile-file \"in.lisp\")" --eval "(quit)"
 
 sbcl --noinform --load in.fasl --quit # --end-toplevel-options "$@"
 
+|#
+
+(let ((y 7))
+  (defun scope-test (x)
+    (list x y)))
+
+(let ((y 5))
+  (scope-test 3)) ;=> (3 7)
+
+(defvar x 3)
+(defun foo (x)  (foo2))
+(defun foo2 () (print x))
+(let ((x 4)) (foo x)) ;=> 4
+
+
+#|
+# lexical vs. dynamic scope
+;;=> (3 7) is lexical scope, 4 is dynamic scope (funcall chain).
+dynamic attribute is set by defvar or defparameter or (declare (special x))
+dynamic scope can be for temporarily masking a global variable.
+
+
+In Common Lisp, default is lexical scope.
+bound variable: when a symbol is used for expressing a variable.
+e.g. let, do, function parameters
+closure: function definition + free variables
+
+|#
+
+(defun list+ (lst n)
+  (mapcar #'(lambda (x) (+ x n)) lst))
+(list+ '(1 2 3) 10)
+
+(let ((cnt 0))
+  (defun new-id () (incf cnt)))
+
+#|
+# static vs. dynamic typing: only values have types.
+# strong vs. weak: "8" - 5, C pointer dereference,
+
+|#
