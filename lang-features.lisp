@@ -57,6 +57,25 @@ bound variable: when a symbol is used for expressing a variable.
 e.g. let, do, function parameters
 closure: function definition + free variables
 
+procedure abstraction
+modularity
+side effect
+historical evolution
+
+decomposition of state:
+a low-level procedure may have state variables which are not of interest to
+intermediate routines, but which must be controlled at a high level.
+dynamic scoping allows any procedure to access/ignore states.
+
+
+
+modularity:
+a good package encapsulates a concept independent of its implementation,
+independent of its context -- referecntial transparency.
+dynamic scoping -- funarg problem and not refercential transparency.
+lexcial scoping -- can't forward reference
+
+ref: the art of the interpreter or the modularity complex
 |#
 
 (defun list+ (lst n)
@@ -71,3 +90,75 @@ closure: function definition + free variables
 # strong vs. weak: "8" - 5, C pointer dereference,
 
 |#
+
+;;;; (random 100)
+(defun random-generator (seed)
+  (lambda () (setq seed (mod (+ (* seed 204013) 2531011) 100))))
+
+(defvar r (random-generator 1))
+(funcall r) 
+
+(defun make-secret-keeper ()
+  (let ((password nil) (secret nil))
+    (lambda (operation &rest arguments)
+	(ecase operation
+	  (set-password
+	   (let ((new-passwd (first arguments)))
+	     (if password
+		 "Can't-already set"
+		 (setq password new-passwd))))
+	  (change-password
+	   (let ((old-passwd (first arguments)) (new-passwd (second arguments)))
+	     (if (eq old-passwd password)
+		 (setq password new-passwd)
+		 "Not changed")))
+	  (set-secret
+	   (let ((passwd (first arguments)) (new-secret (second arguments)))
+	     (if (eq passwd password)
+		 (setq secret new-secret)
+		 '|Wrong password|)))
+	  (get-secret
+	   (let ((passwd (first arguments)))
+	     (if (eq passwd password)
+		 secret
+		 "Wrong password")))))))
+
+(defvar secret-1 (make-secret-keeper))
+(funcall secret-1 'set-password 'valentine)
+(funcall secret-1 'set-secret 'valentine 'deep-dark)
+(funcall secret-1 'get-secret 'valentine)
+(funcall secret-1 'change-password 'valentine 'valen)
+(funcall secret-1 'get-secret 'valentine)
+
+
+;;;; multiple-values
+(setf (values q r) (floor 11 4))
+
+(multiple-value-bind (inc dec)
+    (let ((counter 0))
+      (values
+       (lambda () (incf counter) (print counter))
+       (lambda () (decf counter) (print counter))))
+  (funcall inc)
+  (funcall dec)
+  )
+
+;;;; symbol vs. value
+;;; value has two more names
+(setq L1 '(a b c))
+(setq L2 L1)
+(eq L2 L1) ;=> t
+(setq L3 '(a b c))
+(eq L3 L1) ;=> nil
+(equal L3 L1) ;=> t
+;;; a symbol can name a value for function, variable, print name,  property list...
+(setq first '(the first one))
+(first '(1 2 3))
+(setf (get 'first 'color) 'red)
+(symbol-plist 'first)
+
+
+;;;; lisp does right things for numbers: rational, bignum
+(/ 1 3)
+(* 1000 123456789012345)
+

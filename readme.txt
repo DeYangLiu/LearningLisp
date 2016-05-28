@@ -115,31 +115,13 @@ C-c > list callees
 
 C-c C-t 打开或关闭当前光标处的trace.
 M-x slime-untrace-all
+C-M-i 补全提示，再tab键补全。
 
 
 * 当焦点在repl buffer时:
 TAB 命令补全
 C-Enter 自动补充上括号并求值
 C-c M-o 清空显示
-
-* 当焦点在text buffer时:
-C-c C-k 编译当前文件并加载
-C-c C-l 选择一个文件加载
-C-c C-c 编译当前光标处的toplevel form。
-C-M-q 自动缩进
-C-c C-] 补全右括号
-C-M-a C-M-e M-x slime-end-of-defun
-
-C-c C-c 是体现了lisp的interactive
-C-x C-e 对光标处求值，不用print
-C-M-x  对当前的toplevel form求值
-C-c C-r 对选中的区域求值
-
-C-c < list callers
-C-c > list callees
-
-C-c C-t 打开或关闭当前光标处的trace.
-M-x slime-untrace-all
 
 
 # msys>
