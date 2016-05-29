@@ -162,3 +162,34 @@ ref: the art of the interpreter or the modularity complex
 (/ 1 3)
 (* 1000 123456789012345)
 
+#|
+ defun is to define top-level function.
+ labels is to define local recursive functions.
+ flet is to define local functions.
+
+defun is a macro which do
+(setf (symbol-function 'fn-name) lambda-expr)
+(document ...)
+
+
+|#
+(defun flatten (x)
+  (labels ((rec (x acc)
+	     (cond ((null x) acc)
+		   ((atom x) (cons x acc))
+		   (t (rec (car x) (rec (cdr x) acc))))))
+    (rec x nil)))
+(flatten '(1 (2 3 () (4 5)))) ;=> (1 2 3 4 5)
+
+;;;;intern: string -> symbol
+(defun mkstr (&rest args)
+  (with-output-to-string (s)
+    (dolist (a args) (princ a s))))
+(defun symb (&rest args)
+   (values (intern (apply #'mkstr args))))
+
+(mkstr 'a "BC" #\( 0) ;=> "ABC(0"
+(symb 'a "BC" #\( 0) ;=> |ABC(0|
+(type-of *) ;=> SYMBOL
+
+(symbol-name 'symb) ;=> "SYMB"

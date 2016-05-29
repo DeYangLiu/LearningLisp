@@ -64,6 +64,7 @@ C-a C-k kill whole line
 C-x u undo last operaption
 C-x z repeat last command
 Esc n op repead <op> n times
+M-x replace-string RET string RET newstring RET
 
 Move:
 C-a 移到行首(ahead)，C-e行尾, C-f (forward a char), 
