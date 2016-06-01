@@ -32,6 +32,44 @@ sbcl --noinform --load in.fasl --quit # --end-toplevel-options "$@"
 
 |#
 
+# cons cells
+
+(cons 1 2) ;a constructing cell
+(cons 1 (cons 2 nil))
+
+destructive operations:
+ for-side-effect: setf, vector-push
+ recycling: use side effects only as an optimization.
+
+(setf list (reverse list)) ;let the old list be garbage collected.
+(nreverse list) ;reuse other than allocating new cons cells.
+n -- non-consing
+
+subst/nsubst
+append/nconc
+remove/delete
+
+atom -- is not a cons cell?
+consp/listp -- is a cons cell?
+null -- is nil?
+
+;;; cons cell vs. Cee struct list_t
+(defparameter list (cons obj next))
+
+struct list_t{
+  int obj;
+  struct list_t *next;
+} list;
+
+list_t functional_style(const list_t *args)
+{
+  //do not use static/global variables.
+}
+
+(first list) <==> list.obj
+(rest list) <==> list.next
+
+
 (let ((y 7))
   (defun scope-test (x)
     (list x y)))
