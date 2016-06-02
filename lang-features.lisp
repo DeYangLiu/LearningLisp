@@ -196,9 +196,43 @@ ref: the art of the interpreter or the modularity complex
 (symbol-plist 'first)
 
 
-;;;; lisp does right things for numbers: rational, bignum
-(/ 1 3)
+;;;; lisp does right things for numbers: rational, bignum, complex
+(/ 1 6/4) ;=> 3/2
 (* 1000 123456789012345)
+(+ #c(1 2) #c(3 4)) ;=> #c(4 6)
+(eq 1.0 1e0) ;=> T
+(eq 1 1.0) ;=> nil
+(eq nil ()) ;=> T nil, () refer both to symbol nil
+(eq 'nil '()) ;=> T 'nil, '() is the symbol nil
+
+#|
+S-expressions: number, string, names
+ () "' `, :; \ | ;;reserved 
+ Foo foo --> FOO ;;symbol FOO
+ \f\o\o |foo| --> foo ;;symbol foo
+
+lisp forms: atoms and lists which first element is symbol.
+symbol --> the value of the symbol
+number, string --> the value is itself.
+\(sym args) --> is sym function, macro, or special operator?
+
+25 special operators: 
+ if quote progn
+ block return-from tagbody go catch throw unwind-protect
+
+ let let* setq
+ function lambda  flet labels macrolet 
+  call-next-method
+ symbol-macrolet 
+ multiple-value-call
+ load-time-value progv
+ locally the
+|#
+
+;;;tell if is macro
+(defun print-list (list)
+  (dolist (i list)
+    (format t "item ~a~%" i)))
 
 #|
  defun is to define top-level function.
