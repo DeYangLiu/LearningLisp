@@ -84,3 +84,59 @@ http://www.gigamonkeys.com/book/
 
 (with-output-to-string (out)
   (format out "hello ~s" (list 1 2 3)))
+
+#|
+package: define a namespace,
+control reader how to translate textual names into symbol objects.
+
+|#
+
+;;;;make-symbol, make-package
+(gentemp) ;=> T1
+(gensym) ;=> #:G947
+
+(setf s1 (make-symbol "my-symbol"))
+(import s1) ;put a symbol into a package
+(unintern s1) ;un-import
+;;intern == find-symbol, make-symbol,import
+(symbol-name s1) ;=> "my-symbol"
+
+(defparameter p 'print)
+(funcall p "hello")
+
+(setf (symbol-function 'p) #'print)
+(p "hello")
+
+
+(symbol-package 'car) ;=> home package of car
+(package-use-list :cl-user) ;=> check what are used
+
+(make-package :cc :use '(:cl :cl-user))
+(in-package :cc)
+(setf s0 (make-symbol "my-symbol"))
+(defun foo () "in cc's foo")
+(defun fun () "in cc's fun")
+(export '(s0 foo fun))
+
+(in-package :cl-user)
+(shadow 'foo)
+(defun foo () "in cl-user's foo")
+(foo)
+(cc:foo)
+
+(use-package :cc)
+(foo)
+(fun)
+
+(unuse-package :cc)
+
+;eval-when to avoid can't repeatedly make-package
+(defpackage :com.ludi.foolib
+  (:use :cl :cl-user))
+
+(in-package com.ludi.foolib) ;need to copy this to repl
+(defun foo () "foo in foolib")
+(cl-user::foo)
+(foo)
+
+(package-used-by-list :CL-USER)
