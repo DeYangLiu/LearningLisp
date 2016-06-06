@@ -34,12 +34,32 @@
 (add-to-list 'package-archives
              '("melpa" . "http://melpa.org/packages/") t)
 
-(add-to-list 'load-path
-  "~/.emacs.d/elpa/vlf-1.7/")
+(add-to-list 'load-path "~/.emacs.d/elisp/")
 (package-initialize) ;auto set load-path of installed pkg and load them
 (setq package-enable-at-startup nil)
 
-;;;;
+;;;;paredit
+;;move: C-M-b/f/u/d
+;;delete: C-k/d DEL/M-DEL
+;;add: M-(/"
+;;slurping/barfing: C-(/{
+(autoload 'enable-paredit-mode "paredit" 
+  "Turn on pseudo-structural editing of Lisp code." t)
+(add-hook 'emacs-lisp-mode-hook       #'enable-paredit-mode)
+(add-hook 'eval-expression-minibuffer-setup-hook #'enable-paredit-mode)
+(add-hook 'ielm-mode-hook             #'enable-paredit-mode)
+(add-hook 'lisp-mode-hook             #'enable-paredit-mode)
+(add-hook 'lisp-interaction-mode-hook #'enable-paredit-mode)
+(add-hook 'scheme-mode-hook           #'enable-paredit-mode)
+
+(add-hook 'slime-repl-mode-hook (lambda () (paredit-mode +1)))
+;; Stop SLIME's REPL from grabbing DEL,
+;; which is annoying when backspacing over a '('
+(defun override-slime-repl-bindings-with-paredit ()
+  (define-key slime-repl-mode-map
+    (read-kbd-macro paredit-backward-delete-key) nil))
+(add-hook 'slime-repl-mode-hook 'override-slime-repl-bindings-with-paredit)
+
 
 ;;;; slime
 (load (expand-file-name "~/quicklisp/slime-helper.el"))
