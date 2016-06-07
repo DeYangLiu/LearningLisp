@@ -81,3 +81,65 @@ manifest typing:
 (function +) ;== #'+
 
 (typep 27 'fixnum)
+
+#|
+value is pointer.
+
+building lists:
+ list cons copy-list append 
+
+access:
+ nthcdr last
+
+copy-tree: recur both on car and cdr
+
+is recur correct:
+ cover all cases
+ work for length of list = n, also work for n+1.
+how do you see which parenthesis matches which?
+how do our visualize all recur invocations?
+ our-copy-tree: atom, one cons, n+1 cons
+
+|#
+(setf x '(1 2 3)) ;copy pointer to x
+(setf y x) ;y = x
+(eql y x) ;=> T
+
+;;apply function to car of each list.
+(mapcar #'list '(1 2 3) '(a b c d)) ;=> ((1 A) (2 B) (3 C))
+
+(defun our-copy-list (lst)
+  (if (atom lst)
+      lst
+      (cons (car lst) (our-copy-list (cdr lst)))))
+(setf x '((a ) (b c) d)
+      y (our-copy-list x))
+
+(defun our-copy-tree (tree)
+  (if (atom tree)
+      tree
+      (cons (our-copy-tree (car tree))
+	    (our-copy-tree (cdr tree)))))
+(setf x '(a (b c) (d e))
+      y (our-copy-tree x))
+
+
+(defun our-subst (new old tree)
+  (if (eql old tree)
+      new
+      (if (atom tree)
+	  tree
+	  (cons (our-subst new old (car tree))
+		(our-subst new old (cdr tree))))))
+(our-subst 'y 'x '(and (integerp x) (zerop (mod x 2))))
+
+(member 'a '((a b) (c d)) :key #'car :test #'equal)
+(adjoin 'b '(a b c)) ;prefix member union
+
+;;set union, intersection, set-difference
+(union '(a b c) '(c b s)) ;=> (a c b s)
+
+;;sequence length, subseq, reverse, sort
+(sort '(0 2 1 3 8) #'<)
+;;some and every predicate
+(some #'evenp '(1 2 3))
