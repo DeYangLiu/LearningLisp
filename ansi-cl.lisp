@@ -260,3 +260,50 @@ queue =
 
 (longest-path '((a b c) (b c) (c d a))) ;=>(A B C D)
 
+#|
+sequences: include lists and vectors, 
+ sequence function: subseq, reverse, sort, every, elt
+
+make-array: aref
+vector: svref
+strings: char format
+
+lisp programs could write lisp programs:
+\(defstruct A x y\)--> make-P, A-p, copy-A, A-x A-y
+typep: A < structure < atom < t
+
+make-hash-table: gethash remhash
+
+string parsing: many builtin functions.
+
+|#
+(elt '(a b c) 1) ;=> B
+(position #\a "fantasia" :start 3 :end 5) ;=> 4
+(position 3 '(1 0 7 5) :test #'<) ;=> 2
+(remove-duplicates "abracadabra") ;=> last ocurrs: "cdbra"
+(sort "elbow" #'char<)
+(char "abc" 1) ;=> #\b
+(format nil "~a or ~a" "true" "false")
+(concatenate 'string "true " "false")
+
+;;;; efficiency v.s. fluid
+(setf ht (make-hash-table :test #'equal))
+(setf (gethash 'shape ht) 'spherical
+      (gethash 'size ht) 'giant
+      (gethash 'color ht) 'red)
+(maphash #'(lambda (k v)
+	     (format t "~A:~A~%" k v)) ht)
+
+
+;;;; rotate two dimension array 90 degree clockwise
+;; first row --> last col: (0,j) --> (j,m-1)
+;; i'th row --> last i col: (i,j) --> (j,m-1-i)
+(defun quarter-turn (a)
+    (let* ((dim (array-dimensions a)) (m (first dim)) (n (second dim))
+	   (b (make-array (list n m))))
+      (dotimes (j n)
+	(dotimes (i m)
+	  (setf (aref b j (- m 1 i)) (aref a i j))))
+      b))
+
+(quarter-turn #2A ((a b) (c d))) ;=> #2A((C A) (D B))
