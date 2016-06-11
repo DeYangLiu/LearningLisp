@@ -65,12 +65,16 @@ C-x u undo last operaption
 C-x z repeat last command
 Esc n op repead <op> n times
 M-x replace-string RET string RET newstring RET
+M-^ join line
 
 Move:
 C-a 移到行首(ahead)，C-e行尾, C-f (forward a char), 
 C-n (next line), C-p (previous line)
 C-v page down M-v page up
 Esc 9 M-< (move to 90%) M-> (to end)
+ESC a/e goto begin/end of the sentence.
+ESC </> goto begin/end of the file.
+C-x C-@ goto previous position.
 
 Search:
 M-x o ;vimgrep 

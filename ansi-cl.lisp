@@ -143,3 +143,120 @@ how do our visualize all recur invocations?
 (sort '(0 2 1 3 8) #'<)
 ;;some and every predicate
 (some #'evenp '(1 2 3))
+
+;;;dot pairs
+(assoc '- '((+ . "add") (- . "sub" ))) ;=> (- . "sub")
+
+
+;;;3 versions of pos+: elem + its position, 
+(defun pos+ (lst)
+  (let ((n -1))
+      (mapcar #'(lambda (x) 
+		  (setf n (1+ n))
+		  (format t "~a + ~a = ~a ~%" x n (+ x n))
+		  (+ x n)
+		  )
+	      lst )))
+(pos+ '(1 2 3 4)) ;=> (1 3 5 7)
+
+(defun my-pos (lst pos)
+  (if (null lst)
+      nil
+      (cons (+ (car lst) pos)
+	    (my-pos (cdr lst) (1+ pos)))))
+(defun pos+ (lst)
+  (my-pos lst 0))
+
+(defun pos+ (lst)
+  (let ((ans nil))
+    (do ((i 0 (1+ i))  )
+	((null lst) 'done)
+      (format t "~a ~a ~a ~%" i (car lst) ans )
+      (push (+ i (car lst)) ans)
+      (setf lst (cdr lst))) (reverse ans)))
+
+(defun occurrences (lst)
+  (let ((res nil))
+    (dolist (obj lst)
+      (let ((a (assoc obj res)))
+	(if (null a)
+	    (push (cons obj 1) res)
+	    (incf (cdr a))
+	    )))
+    (sort res #'> :key #'(lambda (x) (cdr x)))))
+(occurrences '(a b a d a c d c a)) ;=> ((A . 4) (C . 2) (D . 2) (B . 1))
+
+;;print dot notation of a list
+(defun showdots (lst)
+  (if (null lst)
+      (format t "NIL")
+      (progn
+	 (format t "(~a . " (car lst))
+	 (showdots (cdr lst))
+	 (format t ")"))))
+(showdots '(A B C)) ;=> (A . (B . (C . NIL)))
+
+;;;;shortest path
+;; represent network with ((node . neighbors))
+(setf min '((a b c) (b c) (c d)))
+
+;; direct paths from node, prefix to path.
+(defun new-paths (path node net)
+  (mapcar #'(lambda (n)
+	      (cons n path))
+	  (cdr (assoc node net))))
+
+;; bread fist search, using queue.
+(defun bfs (end queue net)
+  (if (null queue)
+      nil
+      (let* ((path (car queue)) (node (car path)))
+	(print queue)
+	(if (eql node end)
+	    (reverse path)
+	    (bfs end
+		 (append (cdr queue) (new-paths path node net))
+		 net)))))
+
+(defun shortest-path (start end net)
+  (bfs end (list (list start)) net))
+
+(shortest-path 'a 'd min) ;=> (A C D)
+
+#|
+queue = 
+\((A)) ;initial queue has start node.
+\((B A) (C A)) ;dequeue a node, all paths from a are (a b) (a c), enqueue them.
+\((C A) (C B A)) ;dequeued  is (b a), node is b. all paths from b is (c b).
+\((C B A) (D C A)) ;node is c, all paths from c is (c d).
+\((D C A) (D C B A)) ;node is c, all paths from c is (c d).
+\(A C D) ;node is d, we find the end, reverse the path.
+|#
+
+;;;;find a longest path from a network which may conatain cycles.
+(defun dfs (path net)
+  (let* ((node (car path)) (neib (cdr (assoc node net))) (ret (reverse path)))
+    (if (null neib)
+	nil ;(format t "single: ~a~%" ret)
+	(dolist (x neib)
+	  (if (member x path :test #'equal)
+	      nil ;(format t "circle: ~a ~%" ret)
+	      (let* ((new-path (cons x path)) (tmp  (dfs new-path net)))
+		(if (> (length tmp) (length ret))
+		    (setf ret tmp))))))
+    ret))
+
+;(dfs '(c) '((a b c) (b c) (c d a)))
+
+(defun longest-path (net)
+  (let ((tmp nil))
+    (dolist (adj net)
+      (let* ((a (dfs (list (car adj)) net)))
+	(if (> (length a) (length tmp))
+	    (setf tmp a))
+	nil ;(format t "==ret ~a~%" a)
+	))
+    tmp))
+
+(longest-path '((a b c) (b c) (c d a))) ;=>(A B C D)
+
