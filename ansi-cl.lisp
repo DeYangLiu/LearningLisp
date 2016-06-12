@@ -307,3 +307,103 @@ string parsing: many builtin functions.
       b))
 
 (quarter-turn #2A ((a b) (c d))) ;=> #2A((C A) (D B))
+
+#|
+chap5: control
+blocks: progn, block, tagbody (goto)
+context: let, destructuring-bind
+conditionals: if, when, unless; cond, case;
+iteration: (variable initial update)
+multiple-values: values, multiple-value-bind
+abort: catch-throw-protect
+|#
+;;;;list precedes of x in a vector 
+(defun precedes (x v)
+  (print v)
+  (cond
+    ((null v)
+     nil)
+    ((and (> (length v) 1) (equal x (aref v 1)))
+     (cons (aref v 0) (precedes x (subseq v 1))))
+    ((> (length v) 1) (precedes x (subseq v 1)))))
+
+(precedes #\a "abracadabra")
+
+(defun precedes-iter (x v)
+  (let ((res nil) (m (1- (length v))))
+    (dotimes (i m)
+      (when (equal x (aref v (1+ i)))
+	(push (aref v i) res)))
+    res))
+
+(precedes-iter #\a "abracadabra")
+
+(coerce '(#\1 #\2 #\3) 'string)
+(coerce "123" 'list)
+
+(defun intersperse (x lst)
+  (cond ((null lst)
+	 nil)
+	((= 1 (length lst))
+	 lst)
+	(t 
+	 (cons (car lst) (cons x (intersperse x (cdr lst)))))))
+
+(intersperse '- '(a b c d))
+
+(defun itersperse (x lst)
+  (let ((res (list (car lst))) (m (1- (length lst))))
+    (dotimes (i m)
+      (setf lst (cdr lst))
+      (setf res (append res (list x (car lst)))))
+    res))
+
+(defun successive (lst)
+  (if (< (length lst) 2)
+      t
+      (if (= 1 (abs (- (first lst) (second lst))))
+	  (successive (cdr lst))
+	  nil)))
+
+(successive '(1 2 1 2 1 0))
+
+;;put return value in test.
+(defun successive (lst)
+  (do ((tmp t))
+      ((< (length lst) 2) tmp)
+    ;(format t "~a ~a~%" tmp lst)
+    (setf tmp (and tmp (= 1 (abs (- (first lst) (second lst)))))
+	  lst (cdr lst))))
+
+;;use block-return
+(defun successive (lst)
+  (block nil 
+    (mapc #'(lambda (x y)
+	      (if (= 1 (abs (- x y)))
+		  t
+		  (return nil)))
+	  lst (cdr lst))
+    t))
+
+;;;;return max and min of a vector
+(defun max-min (v)
+  (if (<= (length v) 1)
+      (values (car v) (car v))
+      (multiple-value-bind (x y) (max-min (cdr v))
+	(values (max (car v) x) (min (car v) y)))))
+
+(max-min '(1 2 3))
+
+;;;catch-throw-protect
+(setf x 1)
+
+(defun sub ()
+  ;(throw 'abort 99)
+  t)
+
+(catch 'abort
+  (unwind-protect
+    (format t "before sub x ~a~%" x)
+    (sub)
+    (setf x 2))
+  (format t "normal goes here"))
