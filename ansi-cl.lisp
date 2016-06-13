@@ -407,3 +407,89 @@ abort: catch-throw-protect
     (sub)
     (setf x 2))
   (format t "normal goes here"))
+
+#|
+local function: labels
+\(name parameter-list . body)
+
+(do ((x a (b x)))
+    (test ret)
+  body)
+<===>
+(lables ((recur (x)
+		(cond
+		  (test ret)
+		  (t
+		   body
+		   (recur (b x))))))
+	(recur a))
+
+dynamic scope: 
+change temporarily some global variable.
+
+closure:
+a function that refers to a variable defined outside it.
+
+recursion:
+ list -- a list is nil or cons whose cdr is list.
+ member -- something is a member of a list, if it is the car, or member of cdr; empty list has no member.
+
+|#
+
+
+
+
+(let ((*print-base* 16))
+  (princ 127))
+
+(defun combiner (x)
+  (typecase x
+    (number #'+)
+    (list #'append)
+    (t #'list)))
+(defun combine (&rest args)
+  (apply (combiner (car args)) args))
+
+
+(setf fn (let ((i 3))
+	   #'(lambda (x) (+ x i))))
+(funcall fn 2)
+
+(defun our-funcall (fn &rest args)
+  (apply fn args))
+
+(defun arg-num (&rest args)
+  (length args))
+
+(arg-num 1 2 3)
+
+(defun bin-search (obj vec &optional (start 0)
+			     (end (1- (length vec))))
+  ;(format t "~a ~a~%" start end)
+  (let ((range (- end start)))
+    (if (zerop range)
+	(if (equal obj (aref vec start))
+	    start)
+	(let* ((mid (+ start (round (/ range 2))))
+	       (obj2 (aref vec mid)))
+	  ;(format t "mid: ~a obj: ~a~%" mid obj2)
+	  (if (< obj obj2)
+	      (bin-search obj vec start (1- mid))
+	      (if (> obj obj2)
+		  (bin-search obj vec (1+ mid) end)
+		  mid))))))
+
+
+(bin-search 2 '#(1 2 3))
+;(bin-search #\b "abc")
+
+;;;;return current largest number
+(let ((largest nil))
+  (defun current-largest (x)
+    (if (null largest)
+	(setf largest x)
+	(if (> x largest)
+	    (setf largest x)))
+    largest))
+
+(current-largest 1)
