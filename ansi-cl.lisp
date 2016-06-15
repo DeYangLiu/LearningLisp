@@ -493,3 +493,50 @@ recursion:
     largest))
 
 (current-largest 1)
+
+#|
+print1 prints double-quotes around string.
+princ doesn't
+
+format nil ... <==> sprintf ...
+
+macro characters:
+'a --> (quote a)
+#' --> (function ...)
+#(...) --> (vector ...)
+#nA(...) -->(make-array n )
+#\ --> char
+#S(n ...) --> (defstruct ...)
+
+|#
+(setf path (make-pathname :name "my.fasl"))
+(setf st (open path :direction :output :if-exists :supersede))
+(format st "hi~%")
+(close st)
+
+(setf st (open path :direction :input))
+(read-line st nil 'eof)
+(close st)
+
+(defun my-cat (file)
+  (with-open-file (st file :direction :input)
+    (do ((line (read-line st nil 'eof)
+	       (read-line st nil 'eof)))
+	((eql line 'eof))
+      (format t "~a~%" line))))
+(my-cat path)
+
+;;;; ~S <==> print1
+(let ((*print-array* t))
+  (read-from-string (format nil "~S" (vector 1 2))))
+
+;;;;put each line of a file into a list
+(defun file-list (file)
+  (with-open-file (st file :direction :input)
+    (let ((lst nil))
+      (do ((line (read-line st nil 'eof) (read-line st nil 'eof))) ((eql line 'eof))
+	(push line lst))
+      (nreverse lst))))
+
+(file-list "my.fasl")
+
