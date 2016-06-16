@@ -495,6 +495,10 @@ recursion:
 (current-largest 1)
 
 #|
+character stream: src/dst of characters
+binary stream: :element-type 'unsigned-byte
+
+
 print1 prints double-quotes around string.
 princ doesn't
 
@@ -539,4 +543,70 @@ macro characters:
       (nreverse lst))))
 
 (file-list "my.fasl")
+
+(defun copy-file (from to)
+  (with-open-file (in from :direction :input :element-type 'unsigned-byte)
+    (with-open-file (out to :direction :output :element-type 'unsigned-byte)
+      (do ((c (read-byte in nil -1)
+	      (read-byte in nil -1)))
+	  ((minusp c))
+	(declare (fixnum c))
+	(write-byte c out)))))
+
+
+#|
+the name of symbol: 
+ character converted to uppercase, but anything between vertical bar pair not.
+
+a symbol is a object with structure:
+ name
+ plist
+ package
+ value
+ function
+
+package has name-symbol tables:
+defpackage/in-package
+intern -- let a variable belong  a package. 
+intern = find-symbol + make-symbol.
+
+
+keyword package: accessible anywhere
+ :x <==> keyword:x
+
+a symbol used as a lexical variable is just placeholder,
+it will be compiled to a register or memory location.
+
+eq -- is the same object (same address)
+eql -- eq and also check number type.
+equal -- eql and compare lists using eql on the leaves.
+
+|#
+
+(eql 3 3.0) ;=> NIL
+(equal '("a") '("a"))
+
+;;symbol to name
+(symbol-name 'abc) ;=> "ABC"
+(symbol-name '|abc |) ;=> "abc "
+(symbol-plist 'abc)
+
+
+;;name to symbol, create in current package if not exist.
+(intern "my-symbol")
+
+;;note: upper-cased name of symbol
+(defpackage "MY-APP"
+  (:use "COMMON-LISP")
+  (:export "FOO" "NOISE"))
+(in-package "MY-APP")
+
+(defun noise (animal)
+  (case animal
+    (:dog :woof)
+    (:cat :meow)
+    (:pig :oink)))
+
+(in-package "COMMON-LISP-USER")
+(my-app:noise :cat)
 
