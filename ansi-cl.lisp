@@ -592,7 +592,7 @@ equal -- eql and compare lists using eql on the leaves.
 (symbol-plist 'abc)
 
 
-;;name to symbol, create in current package if not exist.
+;; to symbol, create in current package if not exist.
 (intern "my-symbol")
 
 ;;note: upper-cased name of symbol
@@ -610,3 +610,33 @@ equal -- eql and compare lists using eql on the leaves.
 (in-package "COMMON-LISP-USER")
 (my-app:noise :cat)
 
+
+#|
+number types:
+ bit/fixnum/bignum/
+ ratio
+ short-float/single-float/double-float/long-float
+ complex
+
+fixnum -- integer small enough to fit in one word.
+
+|#
+
+(defun our-truncate (n)
+  (if (> n 0)
+      (floor n)
+      (ceiling n)))
+
+(our-truncate -1.3)
+
+
+(typep (1+ most-positive-fixnum) 'bignum)
+
+;;how many bits are used for fixnum? 29
+(length  (format nil "~b" most-positive-fixnum))
+
+(type-of 1L0) ;=> double-float
+(type-of 1S0) ;=> single-float
+
+;;;;
+(defun intersect-point (x1 y1 x2 y2 x3 y3 x4 y4))
