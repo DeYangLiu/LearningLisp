@@ -640,3 +640,239 @@ fixnum -- integer small enough to fit in one word.
 
 ;;;;
 (defun intersect-point (x1 y1 x2 y2 x3 y3 x4 y4))
+
+#|
+method combination: 
+ Mediator, Observer.
+
+first-class functions:
+ Command, Strategy, Visitor, Template-Method
+
+multimethods: Builder
+
+first-class types: 
+ Abstract-Factory, Proxy
+
+macro: 
+ translate "go", direction (D) --> command(move(D))
+
+backquote read-macro, comma, comma at.
+unintended variable capture, multiple evaluation.
+
+|#
+;; observer is notify after every change.
+(mapc #'notify-after '(cut paste edit))
+(defun notify-after (fn)
+  (eval `(defmethod ,fn :after (x)
+		    (mapc #'notify (observers x)))))
+
+(defmethod convert (type == "font" target::Tex))
+(convert token.type tex-target)
+
+(defmacro nil! (x)
+  (list 'setf x nil))
+
+;; while test body
+(defmacro while (test &rest body)
+  `(do ()
+       ((not ,test))
+     ,@body))
+
+(let ((x 0))
+  (while (< x 10)
+    (princ x)
+    (incf x)))
+
+(defmacro ntimes (n &body body)
+  (let ((g (gensym))
+	 (h (gensym)))
+    `(do ((,g 0 (+ ,g 1)) (,h ,n)) ((>= ,g ,h))
+      ;(format t "~% ~a ~a ~%" ,g ,h)
+      ,@body)))
+
+(let ((n 5))
+  (ntimes (decf n) (princ "."))) ;=> ....
+
+
+(defmacro for (var start stop &body body)
+  (let ((gstop (gensym)))
+    `(do ((,var ,start (1+ ,var))
+	  (,gstop ,stop))
+	 ((> ,var ,gstop))
+       ,@body)))
+
+(for x 1 5 (princ x)) ;=> 12345
+
+;;evaluate length at compile-time
+(defmacro avg (&rest args)
+  `(/ (+ ,@args) ,(length args)))
+
+(avg 1 2 3)
+
+(defun in (obj &rest items)
+  (dolist (x items)
+    (if (eql x obj) (return t))))
+
+(in (car '(* 1 2)) '+ '-)
+
+;;double backquote
+(defmacro with-gensyms (syms &body body)
+  `(let ,(mapcar #'(lambda (x)
+		     `(,x (gensym))) syms)
+     ,@body))
+
+(let ((x -1))
+  (with-gensyms (x y z)
+    (setf x 0 y 1 z 2)
+    (format t "~a ~a ~a~%" x y z))
+  x)
+
+;;macro that capture variables
+(defmacro my-double (a)
+  `(setf ,a (* ,a 2)))
+(let ((x 1))
+  (my-double x) x) ;=> 2
+
+
+;;define if using cond
+(defmacro my-if (test then &optinal else)
+  `(cond
+     (,test ,then)
+     (t ,else)))
+
+(if () 1)
+
+#| drawbacks:
+ n may capture outer variable n.
+ n may be not known on compile-time.
+ eval in macro is evil. 
+|#
+
+(defmacro nth-expr (n &rest exprs)
+  `(eval (nth (1- ,n) (quote ,exprs))))
+
+#| compute at compile-time: 
+the symbol i is gone after macroexpand-1.
+|#
+(defmacro nth-expr (n &rest exprs)
+  (let ((gn (gensym)))
+    `(let ((,gn ,n) )
+       (cond ,@(let ((i 0))
+		    (mapcar 
+		     #'(lambda (e)
+			 (incf i)
+			 `((= ,i ,gn) ,e)) exprs))))))
+
+(let ((n 2))
+  (nth-expr n (/ 1 0) (+ 1 2) (/ 1 0))) ;=> 3
+
+#| expain
+&rest exp ;=> calling parameters A B C  convert to (A B C)
+`f ;=> f ;the symbol f
+`,f ;=> (A B C) ;the symbol refers to
+`,@f ;=> undefined, sbcl isuues error.
+
+suppose e, f dosn't begin with `',@:
+`(e ,f) ;=> list of symbol e and the evaulation of the form f.
+
+`(e ,@f) ;=> 
+ list of e, and the result of "evaluate and spice the form f";
+ the form f are normally evaluated.
+ if f is atom, f appear in middle : `(e ,@f g) will cause an error.
+
+`(a ,@b c) <= (cons 'a (append b (list 'c)))
+
+conclusion:
+ * lisp form is composed of atom and list.
+ * _quote and evalute_ apply to the lisp expression.
+ * quote is to be literal, evalute is to compute.
+ * comma must be in backquote list form.
+ * nested ` and , search symbol from inter to outer.
+|#
+
+(defmacro my-expand (&rest exp)
+  `(e ,@(print exp)))
+
+(macroexpand-1 '(my-expand a b c)) 
+
+#|
+ repl shows: (A B C)
+ returns: (E A B C)
+why?
+ \(print obj) print obj and return obj itself. 
+so we see repl shows, and then substitude as:
+`(e ,@'(E A B C))
+and then spice:
+`(e E A B C)
+no common stuff, this is quote:
+'(e E A B C)
+|#
+
+;;recusive macro
+(defmacro ntime (n &body body)
+  `(if (<= ,n 0)
+       nil
+       (progn
+	 ,@body
+	 (ntime (1- ,n) ,@body))))
+
+(ntime 5 (princ "*") (princ "&")) ;=> *&*&*&*&*&
+
+;; n of expr
+(defmacro n-of (n expr)
+  (let ((gn (gensym)) (gi (gensym)) (gret (gensym)))
+    `(let ((,gn ,n) (,gret nil))
+       (do ((,gi 0 (incf ,gi))) ((>= ,gi ,gn))
+	 (push ,expr ,gret))
+       (nreverse ,gret))))
+
+(let ((i 0) (n 4))
+  (n-of n (incf i))) ;=> (1 2 3 4)
+
+;;define-modify-macro must be: lambda (place args)
+(define-modify-macro append1f (val)
+  (lambda (lst val) (append lst (list val))))
+
+(let ((lst '(a)))
+  (append1f lst 'b) lst)
+
+;;debuging macro
+(defmacro mac (expr)
+  `(pprint (macroexpand-1 ',expr)))
+
+(defmacro mvbind (&rest args)
+  (let ((name 'multiple-value-bind))
+    `(,name ,@args)))
+
+(defmacro abbrev (short long)
+  `(defmacro ,short (&rest args)
+     (let ((name ',long))
+       `(,name ,@args))))
+
+;;outer ` and inner ,
+(defmacro abbrev (short long)
+  `(defmacro ,short (&rest args)
+     `(,',long ,@args)))
+
+(abbrev mvbind multiple-value-bind)
+
+(defmacro abbrevs (&rest names)
+  `(progn
+     ,@(mapcar
+	#'(lambda (pair)
+	    `(abbrev ,@pair))
+	(group names 2))))
+
+(abbrevs mvbind multiple-value-bind
+	 dbind destructuring-bind)
+
+(defun group (source n)
+  (if (zerop n) (error "zero length"))
+  (labels ((recur (source acc)
+	     (let ((rest (nthcdr n source)))
+	       (if (consp rest)
+		   (recur rest (cons (subseq source 0 n) acc))
+		   (nreverse (cons source acc))))))
+    (if source (recur source nil))))
+
+(group '(a b c d e) 2) ;=> ((A B) (C D) (E))
