@@ -876,3 +876,31 @@ no common stuff, this is quote:
     (if source (recur source nil))))
 
 (group '(a b c d e) 2) ;=> ((A B) (C D) (E))
+
+#|
+shared list:
+queue (a b)
+b shared with cdr of a.
+
+|#
+(defun make-queue () (cons nil nil))
+(defun dequeue (q) (pop (car q)))
+(defun enqueue (obj q)
+  (if (null (car q))
+      (setf (cdr q) (setf (car q) (list obj)))
+      (progn
+	(setf (cdr (cdr q)) (list obj)
+	      (cdr q) (cdr (cdr q)))))
+  (car q))
+
+(setf q (make-queue))
+(progn (enqueue 'a q)
+       (enqueue 'b q)
+       (enqueue 'c q))
+
+(defun copy-queue (q)
+  (labels ((copy-q (q)
+	      (if (null (car q))
+		  nil
+		  (cons (car q) (copy-q (cdr q))))))
+    (copy-q (car q))))
