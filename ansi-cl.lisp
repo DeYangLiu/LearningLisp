@@ -904,3 +904,42 @@ b shared with cdr of a.
 		  nil
 		  (cons (car q) (copy-q (cdr q))))))
     (copy-q (car q))))
+
+#|
+clay sculpture/LISP --> bronze sculpture/C
+
+disassemble
+time
+
+declare 
+type variable
+
+
+cons less:
+ delete, nreverse, nconc, nsubst
+ dynamic-extent args ;alloc on stack.
+
+
+|#
+(declaim (optimize (speed 3)
+		   (compilation-speed 0)
+		   (safety 0)
+		   (debug 0)))
+(declaim (inline poly))
+
+(defun poly (a b x)
+  (declare (fixnum a b x))
+  (+ (* a (expt x 2)) (* b x)))
+
+(defun call-poly (x)
+  (poly 1 2 x))
+
+;;check whether poly is really inlined.
+(disassemble 'call-poly)
+
+
+(defun our-adjoin (obj lst &rest args)
+  (declare (dynamic-extent args))
+  (if (apply #'member obj lst args)
+      lst
+      (cons obj lst)))
