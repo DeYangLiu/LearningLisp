@@ -96,6 +96,7 @@
  '(column-number-mode t)
  '(cua-mode t nil (cua-base))
  '(custom-enabled-themes (quote (wombat)))
+ '(safe-local-variable-values (quote ((Syntax . Common-Lisp))))
  '(show-paren-mode t)
  '(tool-bar-mode nil))
 (custom-set-faces
