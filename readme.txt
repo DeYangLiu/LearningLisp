@@ -21,6 +21,7 @@ curl -k -O https://beta.quicklisp.org/quicklisp.lisp
 sbcl --load quicklisp.lisp
 sbcl>
 (quicklisp-quickstart:install)
+(ql:add-to-init-file)
 (ql:quickload "quicklisp-slime-helper")
 
 emacs>
@@ -28,7 +29,8 @@ emacs>
 ;;(load "~/quicklisp/setup.lisp")
 ;add the following to $HOME/.emacs.d/init.el
 ;in linux, i actually has done this:
-; ln -s LearningLisp/init.el $HOME/.emacs.d/init.el
+; ln -s LearningLisp/elisp/init.el $HOME/.emacs.d/init.el
+; ln -s ~/LearningLisp/elisp $HOME/.emacs.d/elisp
 
 (load (expand-file-name "~/quicklisp/slime-helper.el"))
 (setq inferior-lisp-program "sbcl")
