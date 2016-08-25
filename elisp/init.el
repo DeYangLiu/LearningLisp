@@ -10,6 +10,7 @@
 (setq kill-ring-max 200) ;for history record
 (setq message-log-max t)
 (setq visible-bell 1)
+(setq split-width-threshold 9999) ;force horizontal positioning of pop-up windows  
 
 ;(setq make-backup-files nil); no backup!
 (setq
