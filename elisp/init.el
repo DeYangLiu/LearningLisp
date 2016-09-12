@@ -39,6 +39,12 @@
 (package-initialize) ;auto set load-path of installed pkg and load them
 (setq package-enable-at-startup nil)
 
+;;;;open recent files, Emacs 22+
+(require 'recentf)
+(recentf-mode 1)
+;(setq recentf-auto-cleanup 'never)
+;;;M-x recentf-open-files
+
 ;;;;paredit
 ;;move: C-M-b/f/u/d
 ;;delete: C-k/d DEL/M-DEL
