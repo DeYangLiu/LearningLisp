@@ -77,9 +77,15 @@ Esc 9 M-< (move to 90%) M-> (to end)
 ESC a/e goto begin/end of the sentence.
 ESC </> goto begin/end of the file.
 C-x C-@ goto previous position.
+C-M-u/d/n backward-up-list/forward-to-indentation/forward-list
+M-x backward-sexp C-x z z z z ;;move backward
 
 Search:
-M-x o ;vimgrep 
+M-x o ;vimgrep
+C-s C-w C-w ... C-s ;search words under cursor
+C-s M-c ;toggle case-fold-search
+C-s M-p/n ;search history
+
 
 Highlight:
 M-s h r ;highlight regexp
@@ -92,6 +98,21 @@ M-: (getenv "HOME")
 M-: (expand-file-name "~")
 M-x linum-mode ; toggles the line number mode on and off
 M-x (require 'vlf-setup) ; M-x vlf  to open very large file
+M-x eval-last-sexp
+M-x load-file ~/.emacs.d/init.el
+
+C-Settings: CC-mode
+c-default-style
+indent-tabs-mode
+tab-width 4 c-basic-offset 4
+
+C-edit:
+C-M-a/e ;jump to begining of the function
+M-a/e ;jump to previous statement
+C-c C-u ;jump to #if
+C-M-q  ;format the block
+C-c C-q ;format the function
+
 
 Text encoding:
 see/change C-x RET f ;i prefer gbk-unix or utf-8-unix

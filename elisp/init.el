@@ -45,6 +45,7 @@
 ;(setq recentf-auto-cleanup 'never)
 ;;;M-x recentf-open-files
 
+
 ;;;;paredit
 ;;move: C-M-b/f/u/d
 ;;delete: C-k/d DEL/M-DEL
@@ -93,6 +94,17 @@
 (defadvice lisp-mode (before my-slime-setup-once activate)
   (my-slime-setup-once))
 
+;;;;CC-mode
+(setq c-default-style '((java-mode . "java")
+			(awk-mode . "awk")
+			(other . "linux")))
+(setq indent-tabs-mode t)
+(setq tab-width 4)
+(setq c-basic-offset 4)
+(electric-pair-mode 0) ;;auto insert close bracket.
+(setq c-hanging-semi&comma-criteria nil)
+
+(which-function-mode t)
 
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
