@@ -265,3 +265,7 @@ defun is a macro which do
 (type-of *) ;=> SYMBOL
 
 (symbol-name 'symb) ;=> "SYMB"
+
+;;;;read macros: #+ #.
+;;;; "#+A b c": if A in *feathers*, then read b, else b is ignored.
+(read-from-string "#+:CAPI a #.(if (zerop (random 2)) 1 0)")

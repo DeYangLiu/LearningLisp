@@ -140,3 +140,20 @@ control reader how to translate textual names into symbol objects.
 (foo)
 
 (package-used-by-list :CL-USER)
+
+(ql:quickload "quickproject")
+;;;;make-project create *.asd and add path to asdf:*central-registry*
+(quickproject:make-project "~/my-app/" :depends-on '(vecto))
+;;;;so we can
+(ql:quickload "my-app")
+
+;;;; reload
+(load "~/quicklisp/setup.lisp")
+(pushnew (truename "~/my-app/")  ql:*local-project-directories*)
+(ql:quickload "my-app")
+;;(ql:register-local-projects)
+
+
+
+
+
