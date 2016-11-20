@@ -1,5 +1,25 @@
 ;;;; .emacs
 
+;;cedet need sit at very first.
+;;jump back: inner file: C-x C-x; inter file: C-xb
+(let ((path "~/tools/cedet/cedet-devel-load.el"))
+  (if (file-exists-p path)
+      (progn
+	(load-file path)
+	(setq semantic-default-submodes
+	      '(global-semantic-idle-scheduler-mode
+		global-semanticdb-minor-mode
+		global-semantic-idle-summary-mode
+		global-semantic-mru-bookmark-mode))
+	
+	(semantic-mode 1)  ;enable semantic
+	(global-set-key [f9] 'semantic-ia-fast-jump)
+	(global-set-key (kbd "M-<f9>") 'semantic-ia-complete-symbol-menu)
+	(global-set-key (kbd "M-S-<f9>") 'semantic-symref)
+	
+	)))
+
+
 (setq inhibit-startup-message t)
 (setq gnus-inhibit-startup-message t)
 (setq frame-title-format "%b")
