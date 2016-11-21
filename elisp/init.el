@@ -118,11 +118,11 @@
 (setq c-default-style '((java-mode . "java")
 			(awk-mode . "awk")
 			(other . "linux")))
-(setq indent-tabs-mode t)
-(setq tab-width 4)
-(setq c-basic-offset 4)
+(setq-default indent-tabs-mode t) ;disable tab to spaces conversion
+(setq-default tab-width 4)
+(setq-default c-basic-offset 4)
 (electric-pair-mode 0) ;;auto insert close bracket.
-(setq c-hanging-semi&comma-criteria nil)
+(setq c-hanging-semi&comma-criteria nil) ;disable auto new line
 
 (which-function-mode t)
 
