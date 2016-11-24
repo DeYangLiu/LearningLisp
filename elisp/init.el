@@ -1,23 +1,7 @@
 ;;;; .emacs
-
-;;cedet need sit at very first.
-;;jump back: inner file: C-x C-x; inter file: C-xb
-(let ((path "~/tools/cedet/cedet-devel-load.el"))
-  (if (file-exists-p path)
-      (progn
-	(load-file path)
-	(setq semantic-default-submodes
-	      '(global-semantic-idle-scheduler-mode
-		global-semanticdb-minor-mode
-		global-semantic-idle-summary-mode
-		global-semantic-mru-bookmark-mode))
-	
-	(semantic-mode 1)  ;enable semantic
-	(global-set-key [f9] 'semantic-ia-fast-jump)
-	(global-set-key (kbd "M-<f9>") 'semantic-ia-complete-symbol-menu)
-	(global-set-key (kbd "M-S-<f9>") 'semantic-symref)
-	
-	)))
+(add-to-list 'load-path "~/.emacs.d/elisp/")
+(package-initialize) ;auto set load-path of installed pkg and load them
+(setq package-enable-at-startup nil)
 
 
 (setq inhibit-startup-message t)
@@ -55,9 +39,44 @@
 (add-to-list 'package-archives
              '("melpa" . "http://melpa.org/packages/") t)
 
-(add-to-list 'load-path "~/.emacs.d/elisp/")
-(package-initialize) ;auto set load-path of installed pkg and load them
-(setq package-enable-at-startup nil)
+
+;;cedet need sit at very first.
+;;jump back: inner file: C-x C-x; inter file: C-xb
+
+
+;;CC-mode
+(add-hook 'c-mode-common-hook
+		  '(lambda ()
+			 (let ((path "~/tools/cedet/cedet-devel-load.el"))
+			   (if (file-exists-p path)
+				   (progn
+					 (load-file path)
+					 (setq semantic-default-submodes
+						   '(global-semantic-idle-scheduler-mode
+							 global-semantic-idle-completions-mode
+							 global-semantic-show-unmatched-syntax-mode
+							 global-semanticdb-minor-mode
+							 global-semantic-idle-summary-mode
+							 global-semantic-mru-bookmark-mode))
+					 )))
+			 (semantic-mode 1)			;enable semantic
+			 (global-set-key [f9] 'semantic-ia-fast-jump)
+			 (global-set-key (kbd "M-<f9>") 'semantic-ia-complete-symbol-menu)
+			 (global-set-key (kbd "M-S-<f9>") 'semantic-symref)))
+
+;;;;CC-mode
+(setq c-default-style '((java-mode . "java")
+			(awk-mode . "awk")
+			(other . "linux")))
+(setq-default indent-tabs-mode t) ;disable tab to spaces conversion
+(setq-default tab-width 4)
+(setq-default c-basic-offset 4)
+(electric-pair-mode 0) ;;auto insert close bracket.
+(setq c-hanging-semi&comma-criteria nil) ;disable auto new line
+
+(which-function-mode t)
+
+
 
 ;;;;open recent files, Emacs 22+
 (require 'recentf)
@@ -114,17 +133,7 @@
 (defadvice lisp-mode (before my-slime-setup-once activate)
   (my-slime-setup-once))
 
-;;;;CC-mode
-(setq c-default-style '((java-mode . "java")
-			(awk-mode . "awk")
-			(other . "linux")))
-(setq-default indent-tabs-mode t) ;disable tab to spaces conversion
-(setq-default tab-width 4)
-(setq-default c-basic-offset 4)
-(electric-pair-mode 0) ;;auto insert close bracket.
-(setq c-hanging-semi&comma-criteria nil) ;disable auto new line
 
-(which-function-mode t)
 
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
