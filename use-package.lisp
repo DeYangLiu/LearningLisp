@@ -1,4 +1,20 @@
+#|
+# ASDF
 
+(native-namestring "c:/a")
+*load-truename*
+*central-registry* ;system def files
+initialize-source-registry, environment variable, central user configuration file, modular user configuration directory, central system configuration files, modular system configuration directories, implementation configuration
+
+*default-pathname-defaults*
+ UIOP:*nil-pathname*
+
+:compile-check :around-compile
+
+(and list (declare-list-of passenger))
+
+
+|#
 #|
 # how to install and use third party's package
 ## package 
