@@ -45,7 +45,24 @@ iteration:
 
 functions as objects:
  function apply funcall
- 
+
+function简记为#'
+
+funcall fn arg1 ... argN
+apply fn arg1 ... argN nil
+apply fn list ;;把list作为fn的参数
+map type fn sequence+ ;;对sequence每个元素调用fn,结果是type类型的。
+mapcar fn list ;;对list的每个元素调用fn，结果是列表
+reduce fn list ;;对list的第一个和第二个调用fn,结果再和第三个继续调用fn...
+
+可以看出，处于核心的只是apply，其他只是方便使用而已。
+
+setq a '(car b)
+setq b '(11 22 33)
+eval a ;;eval 求符号a的值,解释执行
+
+
+
 lambda expression: lambda list-of-parameters body-expr*
  earlier lisp tell functions from oridnary list.
  refer function literally; 
@@ -57,6 +74,13 @@ manifest typing:
  
 
 |#
+
+(defun curry (fn &rest args)
+  (lambda (&rest rest)
+	(apply fn (append args rest))))
+(funcall (curry #'* 2) 10)
+;;不能省去funcall，因为lambda expr不是函数？
+
 
 (defun ask-number ()
   (format t "please enter a number: ")

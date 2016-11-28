@@ -68,6 +68,8 @@ C-x z repeat last command
 Esc n op repead <op> n times
 M-x replace-string RET string RET newstring RET
 M-^ join line
+M-d delete word after cursor
+M-backspace delete word before cursor
 
 Move:
 C-a 移到行首(ahead)，C-e行尾, C-f (forward a char), 
