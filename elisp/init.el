@@ -115,10 +115,10 @@
 (setq slime-auto-connect 'ask)
 
 (defun my-hyperspec-setup ()
-  (let ((dir (locate-dominating-file invocation-directory "HyperSpec/")))
+  (let ((dir  "~/.emacs.d/HyperSpec/"))
     (if dir
         (progn
-          (setq common-lisp-hyperspec-root (expand-file-name "HyperSpec/" dir)))
+          (setq common-lisp-hyperspec-root (expand-file-name dir)))
       (warn "No HyperSpec directory found"))))
 
 (defun my-slime-setup ()
