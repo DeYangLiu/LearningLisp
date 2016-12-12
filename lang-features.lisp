@@ -269,3 +269,11 @@ defun is a macro which do
 ;;;;read macros: #+ #.
 ;;;; "#+A b c": if A in *feathers*, then read b, else b is ignored.
 (read-from-string "#+:CAPI a #.(if (zerop (random 2)) 1 0)")
+
+
+;;;;universal time to unix time
+(decode-universal-time (get-universal-time))
+
+(defvar *unix-time-base* (encode-universal-time 0 0 0 1 1 1970 0))
+(- (encode-universal-time 0 0 0 11 12 2016 0) *unix-time-base*)
+
