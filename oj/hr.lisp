@@ -18,6 +18,8 @@ list to array:
 test:
 cat in.txt | sbcl --script hr.lisp
 
+defun:
+use after define it.
 
 |#
 
@@ -79,21 +81,6 @@ cat in.txt | sbcl --script hr.lisp
 	(format t "~{~a~^ ~}~%" equal)
 	equal))
 
-(defun partition-array (arr left right)
-  (let ((pivot (aref arr right)) (stored left) (tmp 0))
-	(do ((i left (1+ i))) ((= i right))
-	  (let ((a (aref arr i)) )
-		(if (< a pivot)
-			(progn 
-			  (setf tmp a)
-			  (setf (aref arr i) (aref arr stored))
-			  (setf (aref arr stored) tmp)
-			  (incf stored)))))
-	(setf tmp (aref arr stored))
-	(setf (aref arr stored) pivot)
-	(setf (aref arr right) tmp)
-	stored))
-
 (defun quicksort (arr left right)
   (let ((stored left))
 	(if (> (- right left) 0)
@@ -106,8 +93,31 @@ cat in.txt | sbcl --script hr.lisp
 		  (if (> (- right stored) 1) (quicksort arr (1+ stored) right))
 		  )))
   arr)
+(defun partition-array (arr left right)
+  (let ((pivot (aref arr right)) (stored left) (tmp 0) (cnt 0))
+	(do ((i left (1+ i))) ((= i right))
+	  (let ((a (aref arr i)) )
+		(if (< a pivot)
+			(progn 
+			  (setf tmp a)
+			  (setf (aref arr i) (aref arr stored))
+			  (setf (aref arr stored) tmp)
+			  (incf cnt)
+			  (incf stored)))))
+	(setf tmp (aref arr stored))
+	(setf (aref arr stored) pivot)
+	(setf (aref arr right) tmp)
+	(incf cnt)
+	(values stored cnt)))
 
-
+(defun quicksort (arr left right)
+  (if (> (- right left) 0)
+	  (multiple-value-bind (stored cnt)
+		  (partition-array arr left right)
+		;;(print-array arr)
+		(if (> (- stored left) 1) (incf cnt (quicksort arr left (1- stored))))
+		(if (> (- right stored) 1) (incf cnt (quicksort arr (1+ stored) right)))
+		cnt) 0))
 
 (defvar n (read)
   )
@@ -119,8 +129,11 @@ cat in.txt | sbcl --script hr.lisp
 	((= i n))
   (setf (aref arr i) (read)))
 
+(defvar arr2 (make-array n :initial-contents arr))
 
-(quicksort arr 0 (1- n))
+(format t "~a~%" (- (shifts-of-insert-sort arr n)
+				(quicksort arr2 0 (1- n))))
+
 
 
 
