@@ -109,6 +109,18 @@ ref http://www.gigamonkeys.com/book/loop-for-black-belts.html
 
 (loop for i from 0 to 10 by 2 do (print i))
 
+(defun insert-sort (arr start size)
+  (loop for i from start below (+ start size) with (tmp j)  do
+	   (setf tmp (aref arr i))
+	   (setf j (1- i))
+	   (loop while (>= j 0) do
+			(if (> tmp (aref arr j))
+				(return)
+				(setf (aref arr (1+ j)) (aref arr j)))
+			(decf j))
+	   (setf (aref arr (1+ j)) tmp)) arr)
+
+
 (defun read-word (&optional (stream *standard-input*))
   (loop
      for c = (peek-char nil stream nil nil) ;include whitespace
@@ -155,3 +167,34 @@ ref http://www.gigamonkeys.com/book/loop-for-black-belts.html
 (with-input-from-string (stream "ab c d e ")
   (do ((w (read-word stream) (read-word stream))) ((not w))
 	(format t "==~a==~%" w)))
+
+(defun make-queue () (let ((q (list nil))) (cons q q)))
+(defun enqueue (q item) (setf (cdr q) (setf (cddr q) (list item))))
+(defun dequeue (q) (car (setf (car q) (cdar q))))
+(defun queue-front (q) (cadar q))
+(defun queue-elements (q) (cdar q))
+(defun empty-queue-p (q) (null (cdar q)))
+
+#|
+control-string: "~ 前缀参数 单字符"
+单字符:
+前缀参数: 
+ 由, : @分隔；
+ V或#占位;
+ 含义由单字符决定;
+
+tilde less-than: justification
+mincol,colinc,minpad,padchar<str~>
+最小列宽,超出时的增量，段间隔，填充字符，小于号表示对齐，
+str由~隔开为若干个段，~>表示结束对齐。
+
+tilde left-brace: list iteration
+|#
+(format nil "~12,'0d" 27) ;; "000000000027"
+
+(format nil "~12,,,'0@<~d~>" 27) ;; "270000000000"
+(format nil "~{~a~^,~}" '(1 2 3)) ;;"1,2,3"
+
+(defun char-digit (str i)
+  (let ((c (aref str i)))
+	(- (char-code c) (char-code #\0))))
