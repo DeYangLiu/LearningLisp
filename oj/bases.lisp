@@ -198,3 +198,11 @@ tilde left-brace: list iteration
 (defun char-digit (str i)
   (let ((c (aref str i)))
 	(- (char-code c) (char-code #\0))))
+
+;;;;functional IO
+(defun read-list ()
+    (let ((n (read *standard-input* nil)))
+        (if (null n)
+            nil
+            (cons n (read-list)))))
+(format t "~{~d~%~}" (read-list))
