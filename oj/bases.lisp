@@ -21,6 +21,16 @@ C-c T ;open trace diaglog buffer
 C-c M-t your_function_name ;trace your function
 G ;in trace buffer, show most recent trace
 
+debug mem alloc:
+(room)
+(gc :full t)
+
+;;not implement on windows 8(
+(sb-sprof:start-profiling :mode :alloc)
+...
+(sb-sprof:stop-profiling)
+(with-open-file (f "/tmp/prof.out" :direction :output :if-exists :supersede)
+  (sb-sprof:report :stream f))
 
 |#
 
