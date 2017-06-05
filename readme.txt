@@ -83,6 +83,11 @@ C-x C-@ goto previous position.
 C-M-u/d/n backward-up-list/forward-to-indentation/forward-list
 M-x backward-sexp C-x z z z z ;;move backward
 
+Select:
+C-@ 开始选择
+
+
+
 Search:
 M-x o ;vimgrep
 C-s C-w C-w ... C-s ;search words under cursor
