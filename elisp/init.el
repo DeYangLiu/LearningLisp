@@ -107,6 +107,52 @@
     (read-kbd-macro paredit-backward-delete-key) nil))
 (add-hook 'slime-repl-mode-hook 'override-slime-repl-bindings-with-paredit)
 
+;;;chicken-slime
+;;(add-to-list 'load-path "~/tools/chicken/lib/chicken/8/")   ; Where Eggs are installed
+;;(setq slime-csi-path "~/tools/chicken/bin/csi")
+;;(autoload 'chicken-slime "chicken-slime" "SWANK backend for Chicken" t)
+;;(setq swank-chicken-path "/home/ludi/.emacs.d/scheme/swank-chicken.scm")
+;;(add-hook 'scheme-mode-hook (lambda () (slime-mode t)))
+
+;;;  ~/.emacs.d/elisp/iuscheme.el
+(autoload 'scheme-mode "iuscheme" "Major mode for Scheme." t)
+(autoload 'run-scheme "iuscheme" "Switch to interactive Scheme buffer." t)
+(setq auto-mode-alist (cons '("\\.ss" . scheme-mode) auto-mode-alist))
+(setq scheme-program-name "scheme")
+
+(defun scheme-split-window ()
+  (cond
+   ((= 1 (count-windows))
+    (delete-other-windows)
+    (split-window-vertically (floor (* 0.68 (window-height))))
+    (other-window 1)
+    (switch-to-buffer "*scheme*")
+    (other-window 1))
+   ((not (find "*scheme*"
+               (mapcar (lambda (w) (buffer-name (window-buffer w)))
+                       (window-list))
+               :test 'equal))
+    (other-window 1)
+    (switch-to-buffer "*scheme*")
+    (other-window -1))))
+
+
+(defun scheme-send-last-sexp-split-window ()
+  (interactive)
+  (scheme-split-window)
+  (scheme-send-last-sexp))
+
+
+(defun scheme-send-definition-split-window ()
+  (interactive)
+  (scheme-split-window)
+  (scheme-send-definition))
+
+(add-hook 'scheme-mode-hook
+  (lambda ()
+    (paredit-mode 1)
+    (define-key scheme-mode-map (kbd "<f5>") 'scheme-send-last-sexp-split-window)
+    (define-key scheme-mode-map (kbd "<f6>") 'scheme-send-definition-split-window)))
 
 ;;;; slime
 (load (expand-file-name "~/quicklisp/slime-helper.el"))

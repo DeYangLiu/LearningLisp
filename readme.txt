@@ -89,6 +89,8 @@ C-s C-w C-w ... C-s ;search words under cursor
 C-s M-c ;toggle case-fold-search
 C-s M-p/n ;search history
 
+C-M-r  [0-9]\{2,\} ;search two or more digits.
+
 
 Highlight:
 M-s h r ;highlight regexp
