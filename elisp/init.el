@@ -65,9 +65,7 @@
 			 (global-set-key (kbd "M-S-<f9>") 'semantic-symref)))
 
 ;;;;CC-mode
-(setq c-default-style '((java-mode . "java")
-			(awk-mode . "awk")
-			(other . "linux")))
+(setq c-default-style '((java-mode . "java") (awk-mode . "awk") (other . "linux")))
 (setq-default indent-tabs-mode t) ;disable tab to spaces conversion
 (setq-default tab-width 4)
 (setq-default c-basic-offset 4)
@@ -161,10 +159,10 @@
 (setq slime-auto-connect 'ask)
 
 (defun my-hyperspec-setup ()
-  (let ((dir  "~/.emacs.d/HyperSpec/"))
+  (let ((dir (locate-dominating-file invocation-directory "HyperSpec/")))
     (if dir
         (progn
-          (setq common-lisp-hyperspec-root (expand-file-name dir)))
+          (setq common-lisp-hyperspec-root (expand-file-name "HyperSpec/" dir)))
       (warn "No HyperSpec directory found"))))
 
 (defun my-slime-setup ()
@@ -199,3 +197,9 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  )
+
+;;;display
+;;;; cursor display M-x hl-line-mode or global-hl-line-mode
+(setq blink-cursor-blinks -1)
+(set-cursor-color "#ffffff")
+(setq-default cursor-type '(bar . 3))

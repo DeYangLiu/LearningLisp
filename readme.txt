@@ -56,6 +56,8 @@ C-mouse
 C-x LEFT/RIGHT ARROW switch buffer
 C-x C-q toggle read-only/read-write
 C-x k kill current buffer
+C-x b select buffers
+
 
 frame:
 C-x 5 2 make new frame
@@ -110,6 +112,7 @@ M-x linum-mode ; toggles the line number mode on and off
 M-x (require 'vlf-setup) ; M-x vlf  to open very large file
 M-x eval-last-sexp
 M-x load-file ~/.emacs.d/init.el
+C-x describe-bindings list key bindings
 
 C-Settings: CC-mode
 c-default-style
