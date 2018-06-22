@@ -63,6 +63,10 @@ frame:
 C-x 5 2 make new frame
 C-x 5 o move to next frame
 
+Open:
+M-x eww RET (URL) RET ;emacs open http file
+M-x  sgml-mode
+
 Edit:
 C-a C-k kill whole line
 C-x u undo last operaption
@@ -72,6 +76,10 @@ M-x replace-string RET string RET newstring RET
 M-^ join line
 M-d delete word after cursor
 M-backspace delete word before cursor
+
+;;;replace tabs with spaces
+(setq-default indent-tabs-mode nil) 
+;;or select buffer and M-x untabify
 
 Move:
 C-a 移到行首(ahead)，C-e行尾, C-f (forward a char), 
@@ -87,7 +95,8 @@ M-x backward-sexp C-x z z z z ;;move backward
 
 Select:
 C-@ 开始选择
-
+M-x indent-region
+M-x rectangle-mark-mode ;block selection
 
 
 Search:
