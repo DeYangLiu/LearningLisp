@@ -153,7 +153,7 @@
     (define-key scheme-mode-map (kbd "<f6>") 'scheme-send-definition-split-window)))
 
 ;;;; slime
-(load (expand-file-name "~/quicklisp/slime-helper.el"))
+;(load (expand-file-name "~/quicklisp/slime-helper.el"))
 
 (setq inferior-lisp-program "sbcl")
 (setq slime-auto-connect 'ask)
