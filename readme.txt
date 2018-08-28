@@ -47,6 +47,8 @@ C-x o move to next window
 C-x 0 kill current window
 C-x 1 kill all windows except current window
 
+exit:
+C-x C-c ;or M-x kill-emacs
 
 buffer:
 C-x C-f find and load file
@@ -82,7 +84,8 @@ M-backspace delete word before cursor
 ;;or select buffer and M-x untabify
 
 Move:
-C-a 移到行首(ahead)，C-e行尾, C-f (forward a char), 
+C-a 移到行首(ahead)，C-e行尾, C-f (forward a char),
+M-f/b 移到下/上一个词
 C-n (next line), C-p (previous line)
 C-v page down M-v page up
 Esc 9 M-< (move to 90%) M-> (to end)
