@@ -203,3 +203,6 @@
 (setq blink-cursor-blinks -1)
 (set-cursor-color "#ffffff")
 (setq-default cursor-type '(bar . 3))
+
+;;; M-x json-pretty-print-buffer
+(add-hook 'json-mode-hook #'flycheck-mode)
